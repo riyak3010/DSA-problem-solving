@@ -9,33 +9,59 @@
  * };
  */
 class Solution {
-    bool checkPalindrome(vector <int> arr){
-        int n = arr.size();
-        int s = 0;
-        int e = n-1;
-        
-        while(s<=e){
-            if(arr[s]!=arr[e]){
-                return 0;
-            }
-            
-            s++;
-            e--;
-        }
-        
-        return 1;
+
+ListNode* getMiddle(ListNode* head){
+    ListNode* slow = head;
+    ListNode* fast = head->next;
+
+    while(fast!=NULL && fast->next!=NULL){
+        fast = fast->next->next;
+        slow = slow->next;
     }
+
+    return slow;
+}
+
+ListNode* reverse(ListNode* head){
+    ListNode* curr = head;
+    ListNode* prev = NULL;
+    ListNode* next = NULL;
+    
+    while(curr!=NULL){
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+
+    return prev;
+}
 
 public:
     bool isPalindrome(ListNode* head) {
-        vector <int> arr;
-        ListNode* temp = head;
-        while(temp!=NULL){
-            arr.push_back(temp->val);
-            temp = temp->next;
+        if (head==NULL){
+            return true;
         }
-        
-        return checkPalindrome(arr);
-        
+
+        ListNode* middle = getMiddle(head);
+
+        // reverse linked list after middle
+        ListNode* temp = middle->next;
+        middle->next = reverse(temp);
+
+        // compare both halves
+        ListNode* h1 = head;
+        ListNode* h2 = middle->next;
+
+        while(h2!=NULL){
+            if(h1->val != h2->val){
+                return false;
+            }
+
+            h1 = h1->next;
+            h2 = h2->next;
+        }
+
+        return true;
     }
 };
